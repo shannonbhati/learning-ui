@@ -1,2 +1,2 @@
 # learning-ui 
-will try to learn jquery in this code
+will try to learn jquery in this code ok.
