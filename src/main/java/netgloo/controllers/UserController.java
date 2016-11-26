@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- * Class UserController
+ * A class to test interactions with the MySQL database using the UserDao class.
+ *
+ * @author netgloo
  */
 @Controller
 public class UserController {
@@ -17,28 +19,35 @@ public class UserController {
   // ------------------------
   // PUBLIC METHODS
   // ------------------------
-
+  
   /**
-   * Create a new user with an auto-generated id and email and name as passed 
-   * values.
+   * /create  --> Create a new user and save it in the database.
+   * 
+   * @param email User's email
+   * @param name User's name
+   * @return A string describing if the user is succesfully created or not.
    */
-  @RequestMapping(value="/create")
+  @RequestMapping("/create")
   @ResponseBody
   public String create(String email, String name) {
+    User user = null;
     try {
-      User user = new User(email, name);
-      userDao.create(user);
+      user = new User(email, name);
+      userDao.save(user);
     }
     catch (Exception ex) {
       return "Error creating the user: " + ex.toString();
     }
-    return "User succesfully created!";
+    return "User succesfully created! (id = " + user.getId() + ")";
   }
   
   /**
-   * Delete the user with the passed id.
+   * /delete  --> Delete the user having the passed id.
+   * 
+   * @param id The id of the user to delete
+   * @return A string describing if the user is succesfully deleted or not.
    */
-  @RequestMapping(value="/delete")
+  @RequestMapping("/delete")
   @ResponseBody
   public String delete(long id) {
     try {
@@ -52,45 +61,53 @@ public class UserController {
   }
   
   /**
-   * Retrieve the id for the user with the passed email address.
+   * /get-by-email  --> Return the id for the user having the passed email.
+   * 
+   * @param email The email to search in the database.
+   * @return The user id or a message error if the user is not found.
    */
-  @RequestMapping(value="/get-by-email")
+  @RequestMapping("/get-by-email")
   @ResponseBody
   public String getByEmail(String email) {
     String userId;
     try {
-      User user = userDao.getByEmail(email);
+      User user = userDao.findByEmail(email);
       userId = String.valueOf(user.getId());
     }
     catch (Exception ex) {
-      return "User not found: " + ex.toString();
+      return "User not found";
     }
     return "The user id is: " + userId;
   }
   
   /**
-   * Update the email and the name for the user indentified by the passed id.
+   * /update  --> Update the email and the name for the user in the database 
+   * having the passed id.
+   * 
+   * @param id The id for the user to update.
+   * @param email The new email.
+   * @param name The new name.
+   * @return A string describing if the user is succesfully updated or not.
    */
-  @RequestMapping(value="/update")
+  @RequestMapping("/update")
   @ResponseBody
-  public String updateName(long id, String email, String name) {
+  public String updateUser(long id, String email, String name) {
     try {
-      User user = userDao.getById(id);
+      User user = userDao.findOne(id);
       user.setEmail(email);
       user.setName(name);
-      userDao.update(user);
+      userDao.save(user);
     }
     catch (Exception ex) {
       return "Error updating the user: " + ex.toString();
     }
     return "User succesfully updated!";
-  } 
+  }
 
   // ------------------------
   // PRIVATE FIELDS
   // ------------------------
-  
-  // Wire the UserDao used inside this controller.
+
   @Autowired
   private UserDao userDao;
   
