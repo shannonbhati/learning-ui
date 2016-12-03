@@ -112,7 +112,7 @@ public class UserController {
         } catch (Exception ex) {
             return "Error updating the user: " + ex.toString();
         }
-        return "User succesfully updated!";
+        return "User successfully updated!";
     }
 
     // ------------------------

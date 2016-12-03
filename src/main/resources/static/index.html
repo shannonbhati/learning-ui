@@ -1,26 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Bootstrap Example</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
+  <ul class="nav nav-tabs">
+    <li class="active"><a data-toggle="tab" href="#create">Create</a></li>
+    <li><a data-toggle="tab" href="#email">Select by email</a></li>
+    <li><a data-toggle="tab" href="#name">select by name</a></li>
+    <li><a data-toggle="tab" id="findallclick" href="#findall">Find all</a></li>
+    <li><a data-toggle="tab" href="#delete">Delete</a></li>
+  </ul>
+  <div class="tab-content">
+    <div id="create" class="tab-pane fade in active">
+      <h3>Fill Data</h3>
+      <form action="/create">
+        <div class="form-group">
+          <label for="exampleInputName">Name</label>
+          <input type="text" name="name" class="form-control" id="exampleInputName" placeholder="name">
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" name="email" class="form-control"  placeholder="email">
+        </div>
 
-<div class="container">
-    <h2>Pagination</h2>
-    <p>The .pagination class provides pagination links:</p>
-    <ul class="pagination">
-        <li><a href="#">1</a></li>
-        <li><a href="#">2</a></li>
-        <li><a href="#">3</a></li>
-        <li><a href="#">4</a></li>
-        <li><a href="#">5</a></li>
-    </ul>
-</div>
+        <button type="submit" class="btn btn-default">Submit</button>
 
+      </form>
+    </div>
+
+    <div id="email" class="tab-pane fade">
+      <h3>Enter your email : </h3>
+
+      <label for="exampleInputPassword1">Email</label>
+      <input type="email" name="email" class="form-control" id="exampleInputPassword1" placeholder="email">
+    </div>
+    <div id="findall" class="tab-pane fade">
+     <table class = "table">
+       <thead>
+         <th>id</th>
+         <th>Name</th>
+         <th>Email</th>
+       </thead>
+       <tbody id= "cid">
+       </tbody>
+
+     </table>
+
+   </div>
+ </div>
 </body>
+
+<script>
+
+
+  $(document).ready(function(){
+
+    $(document).on('click', '#findallclick', function(event) {
+
+      $.get('http://localhost:8080/get-all',function(data, status){
+        $('#cid').empty();
+        data.map(function(entry){
+          var str = "<tr>"+
+          "<td id=td_"+entry.id+">"+entry.id+"</td>"+
+          "<td>"+entry.name+"</td>"+
+          "<td>"+entry.email+"</td>"+
+          '<td> <button type="button" data-id='+entry.id+' id=bt_'+entry.id+' class="btn btn-danger delete">Delete</button></td>'
+          "</tr>"
+          $("#cid").append(str);
+
+        })
+       $(document).on('click', '.delete', function(eventDel) {
+        debugger;
+         /* Act on the event */
+       });
+            // alert("Data: " +JSON.stringify(data) + "\nStatus: " + status);
+          });
+      /* Act on the event */
+    });
+  });
+</script>
 </html>
