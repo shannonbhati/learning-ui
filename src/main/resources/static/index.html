@@ -66,23 +66,61 @@
       $.get('http://localhost:8080/get-all',function(data, status){
         $('#cid').empty();
         data.map(function(entry){
-          var str = "<tr>"+
+          var str = "<tr>"+ 
           "<td id=td_"+entry.id+">"+entry.id+"</td>"+
-          "<td>"+entry.name+"</td>"+
-          "<td>"+entry.email+"</td>"+
-          '<td> <button type="button" data-id='+entry.id+' id=bt_'+entry.id+' class="btn btn-danger delete">Delete</button></td>'
+          "<td>"+"<input type='text' id='name_"+entry.id+"' value='"+entry.name+"'/></td>"+
+          "<td>"+"<input type='text' id='email_"+entry.id+"' value='"+entry.email+"'/></td>"+
+          '<td> <button type="button" data-id='+entry.id+' id=bt_'+entry.id+' class="btn btn-danger delete">Delete</button></td>' +
+          '<td> <button type="button" data-id='+entry.id+' id=up_'+entry.id+' class="btn btn-primary update">Update</button></td>'
           "</tr>"
           $("#cid").append(str);
 
         })
-       $(document).on('click', '.delete', function(eventDel) {
-        debugger;
-         /* Act on the event */
-       });
+        $(document).on('click', '.delete', function(eventDel){
+          var delID = $(eventDel.target).attr('data-id');
+          $.ajax({
+            url: '/delete',
+            data: {id: $(eventDel.target).attr('data-id')},
+          })
+          .done(function() {
+            alert("ID: "+ delID +" Deleted");
+            $(eventDel.target).parent().parent().remove()
+          })
+          .fail(function() {
+            console.log("error");
+          })
+          .always(function() {
+            console.log("complete");
+          });
+          
+        });
             // alert("Data: " +JSON.stringify(data) + "\nStatus: " + status);
           });
       /* Act on the event */
     });
+    $(document).on('click', '.update', function(eventUpdate){
+      var upID = $(eventUpdate.target).attr('data-id');
+      var newName = $('#name_'+upID).val();
+      var newEmail = $('#email_'+upID).val();
+      $.ajax({
+        url: '/update',
+        type: 'POST',
+        data: {id: upID,name:newName,email:newEmail}
+      })
+      .done(function() {
+        alert("Data updated successfully");
+      })
+      .fail(function() {
+        console.log("error");
+      })
+      .always(function() {
+        console.log("complete");
+      });
+
+
+
+
+    })
   });
 </script>
 </html>
