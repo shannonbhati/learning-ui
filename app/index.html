@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="bundle.js"></script>
+
+</head>
+<body>
+  <ul class="nav nav-tabs">
+    <li class="active"><a data-toggle="tab" href="#create">Create</a></li>
+    <li><a data-toggle="tab" href="#email">Select by email</a></li>
+    <li><a data-toggle="tab" href="#name">select by name</a></li>
+    <li><a data-toggle="tab" id="findallclick" href="#findall">Find all</a></li>
+    <li><a data-toggle="tab" href="#delete">Delete</a></li>
+  </ul>
+  <div class="tab-content">
+    <div id="create" class="tab-pane fade in active">
+      <h3>Fill Data</h3>
+      <form action="/create">
+        <div class="form-group">
+          <label for="exampleInputName">Name</label>
+          <input type="text" name="name" class="form-control" id="exampleInputName" placeholder="name">
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" name="email" class="form-control"  placeholder="email">
+        </div>
+
+        <button type="submit" class="btn btn-default">Submit</button>
+
+      </form>
+    </div>
+
+    <div id="email" class="tab-pane fade">
+      <h3>Enter your email : </h3>
+
+      <label for="exampleInputPassword1">Email</label>
+      <input type="email" name="email" class="form-control" id="exampleInputPassword1" placeholder="email">
+    </div>
+    <div id="findall" class="tab-pane fade">
+     <table class = "table">
+       <thead>
+         <th>id</th>
+         <th>Name</th>
+         <th>Email</th>
+       </thead>
+       <tbody id= "cid">
+       </tbody>
+
+     </table>
+
+   </div>
+ </div>
+</body>
+
+<script>
+
+
+  $(document).ready(function(){
+
+    $(document).on('click', '#findallclick', function(event) {
+
+      $.get('/get-all',function(data, status){
+        $('#cid').empty();
+        data.map(function(entry){
+          var str = "<tr>"+ 
+          "<td id=td_"+entry.id+">"+entry.id+"</td>"+
+          "<td>"+"<input type='text' id='name_"+entry.id+"' value='"+entry.name+"'/></td>"+
+          "<td>"+"<input type='text' id='email_"+entry.id+"' value='"+entry.email+"'/></td>"+
+          '<td> <button type="button" data-id='+entry.id+' id=bt_'+entry.id+' class="btn btn-danger delete">Delete</button></td>' +
+          '<td> <button type="button" data-id='+entry.id+' id=up_'+entry.id+' class="btn btn-primary update">Update</button></td>'
+          "</tr>"
+          $("#cid").append(str);
+
+        })
+        $(document).on('click', '.delete', function(eventDel){
+          var delID = $(eventDel.target).attr('data-id');
+          $.ajax({
+            url: '/delete',
+            data: {id: $(eventDel.target).attr('data-id')},
+          })
+          .done(function() {
+            alert("ID: "+ delID +" Deleted");
+            $(eventDel.target).parent().parent().remove()
+          })
+          .fail(function() {
+            console.log("error");
+          })
+          .always(function() {
+            console.log("complete");
+          });
+          
+        });
+            // alert("Data: " +JSON.stringify(data) + "\nStatus: " + status);
+          });
+      /* Act on the event */
+    });
+    $(document).on('click', '.update', function(eventUpdate){
+      var upID = $(eventUpdate.target).attr('data-id');
+      var newName = $('#name_'+upID).val();
+      var newEmail = $('#email_'+upID).val();
+      $.ajax({
+        url: '/update',
+        type: 'POST',
+        data: {id: upID,name:newName,email:newEmail}
+      })
+      .done(function() {
+        alert("Data updated successfully");
+      })
+      .fail(function() {
+        console.log("error");
+      })
+      .always(function() {
+        console.log("complete");
+      });
+
+
+
+
+    })
+  });
+</script>
+</html>
