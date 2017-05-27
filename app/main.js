@@ -1,3 +1,3 @@
-var longVariableName = 'Hello';
-longVariableName += ' World';
-document.write('<h1>' + longVariableName + '</h1>');
+if (process.env.NODE_ENV !== 'production') {
+  require('./index.html')
+}

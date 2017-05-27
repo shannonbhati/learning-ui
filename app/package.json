@@ -4,7 +4,7 @@
   "description": "a collection of simple demos of Webpack",
   "main": "index.js",
   "scripts": {
-    "dev": "node server.js"
+    "dev": "webpack-dev-server --config server.js"
   },
   "keywords": [
     "build",
@@ -23,11 +23,12 @@
     "express": "^4.15.3",
     "file-loader": "0.x",
     "history": "^1.17.0",
-    "html-webpack-plugin": "2.x",
+    "html-webpack-plugin": "^2.28.0",
     "http-proxy-middleware": "^0.17.4",
     "jquery": "3.x",
     "jsx-loader": "~0.13.2",
     "open-browser-webpack-plugin": "0.x",
+    "raw-loader": "^0.5.1",
     "react": "15.x",
     "react-dom": "15.x",
     "react-router": "2.x",

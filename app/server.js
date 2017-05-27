@@ -1,44 +1,48 @@
-var path = require('path');
-var webpack = require('webpack');
-var express = require('express');
-var proxy = require('http-proxy-middleware');
+var path = require('path')
+var webpack = require('webpack')
+var HtmlWebpackPlugin = require('html-webpack-plugin')
 
-var app = express();
-var compiler = webpack({
-entry: {
-    app: [
-      'webpack-hot-middleware/client',
-      'webpack/hot/only-dev-server',
-    ]
-  },
-  output: {
-    path: path.join(__dirname),
-    filename: 'app.js',
-    publicPath: '/static/'
-  }
-});
-
-app.use(require('webpack-dev-middleware')(compiler, {
+module.exports = {
+  devtool: 'cheap-eval-source-map',
   noInfo: true,
-  publicPath: '/static/'
-}));
-
-app.use(require('webpack-hot-middleware')(compiler));
-app.use('/assets', express.static(path.resolve(__dirname, 'assets')));
-
-
-app.get('/', function(req, res) {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-app.use('*', proxy({target: "http://127.0.0.1:8080", cookieDomainRewrite: "127.0.0.1", hostRewrite: "127.0.0.1:3000"}));
-
-
-
-app.listen(3000, function(err) {
-  if (err) {
-    return console.error(err);
-  }
-
-  console.log('Listening at http://localhost:3000/');
-});
+  entry: [
+    'webpack-dev-server/client?http://localhost:3000',
+    'webpack/hot/dev-server',
+    './main.js'
+  ],
+  output: {
+    path: path.join(__dirname, 'dist'),
+    filename: 'bundle.js'
+  },
+  plugins: [
+    new webpack.HotModuleReplacementPlugin(),
+    new HtmlWebpackPlugin({
+      template: './index.html'
+    })
+  ],
+  module: {
+    loaders: [{
+      test: /\.css$/,
+      loaders: ['style', 'css']
+    }, {
+      test: /\.html$/,
+      loader: "raw-loader" // loaders: ['raw-loader'] is also perfectly acceptable.
+    }]
+  },
+  devServer: {
+    historyApiFallback: true,
+    noInfo: true,
+    hot: true,
+    inline: true,
+    progress: true,
+    contentBase: './',
+    proxy: {
+      "*": {
+        target: "http://127.0.0.1:8080",
+        cookieDomainRewrite: "127.0.0.1",
+        hostRewrite: "127.0.0.1:3000"
+      }
+    },
+    port: 3000,
+  },
+}
