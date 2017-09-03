@@ -79,6 +79,12 @@ public class UserController {
         return "The user id is: " + userId;
     }
 
+    @RequestMapping("/search")
+    @ResponseBody
+    public List<User> searchByName(String name) {
+        return userDao.findByNameContaining(name);
+    }
+
 
     @RequestMapping("/get-all")
     @ResponseBody
@@ -87,7 +93,7 @@ public class UserController {
         Iterable<User> users = userDao.findAll();
         List<User> list = new ArrayList<>();
         for (User user : users) {
-          list.add(user);
+            list.add(user);
         }
         return list;
     }
