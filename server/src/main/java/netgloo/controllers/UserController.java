@@ -16,6 +16,7 @@ import java.util.List;
  * @author netgloo
  */
 @Controller
+@RequestMapping("/api")
 public class UserController {
 
     // ------------------------
