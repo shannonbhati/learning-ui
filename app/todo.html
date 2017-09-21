@@ -42,8 +42,14 @@ $(document).ready(function() {
     /* Act on the event */
   });
   $(document).on('click', '.todo_check', function(event) {
+  
     var cId = $(event.target).attr('data-id');
+   if( $(event.target).is(":checked")){
     markCompleted(cId);
+  }
+  else{
+    markInActive(cId);
+  }
     /* Act on the event */
   });
 

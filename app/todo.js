@@ -30,3 +30,8 @@ function getAllActive(index) {
 		return !item.completed
 	});
 }
+function markInActive(index) {
+	TODO_LIST[index].completed = false;
+	localStorage.setItem("todo_list", JSON.stringify(TODO_LIST));
+	
+}
