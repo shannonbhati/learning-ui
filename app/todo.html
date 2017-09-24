@@ -2,41 +2,51 @@
 <html>
 <head>
   <title>My todo List</title>
- 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="todo.css"/>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
     <script src="bundle.js"></script>
     <script src="todo.js"></script>
 
 </head>
 <body>
-<center>This is My TODO Page</center>
-<input type="text" name="" id="todo-text">
+<center id ="content"><h3>This is My TODO Page</h3></center>
+<div class="input-group">
+  <span class="input-group-addon"></span>
+  <input type="text" class="form-control" placeholder="Task" id="todo-text">
+</div>
+
 <ul class="list-group" id="todo-list">
   
 </ul>
+<input type="button" class="all btn btn-primary" value="All">
 
+<input type="button" class="Completed btn btn-secondary" value="Completed">
+<input type="button" class="active btn btn-success" value="Active">
+<input type="button" class="clear btn btn-warning" value="Clear">
+<input type="button" value="Clear all completed" class="clearCompleted btn btn-dark">
 
 
 </body>
 <script type="text/javascript">
-function renderList() {
+function renderList(todoList) {
   var listHtml = "";
   // <input type = "checkbox" value= "status">
-  TODO_LIST.forEach(function(task, index) {
-    listHtml += "<li><input type='checkbox' " + (task.completed ? "checked" : "") + " class='todo_check' id=C_" + index + " data-id='" + index + "'/>" + task.name + "</li>";
+  todoList.forEach(function(task, index) {
+    listHtml += "<li><div class='input-group'><span class='input-group-addon'><input type='checkbox' " + (task.completed ? "checked" : "") + " class='  todo_check' id=C_" + index + " data-id='" + index + "'/></span><span class='form-control'>" + task.name + "</span> </div></li>";
   });
   $("#todo-list").html(listHtml)
 }
 $(document).ready(function() {
-  renderList();
+  renderList(TODO_LIST);
   $("#todo-text").keypress(function(e) {
     var key = e.which;
     if(key==13){
       var n = $(e.target).val();
       addToList(n);
-      renderList()
+      renderList(TODO_LIST)
     }
 
     /* Act on the event */
@@ -53,7 +63,24 @@ $(document).ready(function() {
     /* Act on the event */
   });
 
-  
+  $(document).on('click','.Completed',function(event){
+     renderList(getAllCompleted());
+
+  })
+  $(document).on('click','.all',function(event){
+    renderList(TODO_LIST);
+  })
+  $(document).on('click','.active',function(event){
+    renderList(getAllActive());
+  })
+  $(document).on('click','.clear',function(event){
+   clearAll();
+   renderList(TODO_LIST);
+  })
+  $(document).on('click','.clearCompleted',function(event){
+    clearAllCompleted();
+    renderList(TODO_LIST);
+  })
   
 
 });
