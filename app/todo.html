@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html>
 <head>
   <title>My todo List</title>
@@ -9,6 +9,7 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
     <script src="bundle.js"></script>
     <script src="todo.js"></script>
+    <script src="todo_org.js"></script>
 
 </head>
 <body>
@@ -31,59 +32,7 @@
 
 </body>
 <script type="text/javascript">
-function renderList(todoList) {
-  var listHtml = "";
-  // <input type = "checkbox" value= "status">
-  todoList.forEach(function(task, index) {
-    listHtml += "<li><div class='input-group'><span class='input-group-addon'><input type='checkbox' " + (task.completed ? "checked" : "") + " class='  todo_check' id=C_" + index + " data-id='" + index + "'/></span><span class='form-control'>" + task.name + "</span> </div></li>";
-  });
-  $("#todo-list").html(listHtml)
-}
-$(document).ready(function() {
-  renderList(TODO_LIST);
-  $("#todo-text").keypress(function(e) {
-    var key = e.which;
-    if(key==13){
-      var n = $(e.target).val();
-      addToList(n);
-      renderList(TODO_LIST)
-    }
-
-    /* Act on the event */
-  });
-  $(document).on('click', '.todo_check', function(event) {
-  
-    var cId = $(event.target).attr('data-id');
-   if( $(event.target).is(":checked")){
-    markCompleted(cId);
-  }
-  else{
-    markInActive(cId);
-  }
-    /* Act on the event */
-  });
-
-  $(document).on('click','.Completed',function(event){
-     renderList(getAllCompleted());
-
-  })
-  $(document).on('click','.all',function(event){
-    renderList(TODO_LIST);
-  })
-  $(document).on('click','.active',function(event){
-    renderList(getAllActive());
-  })
-  $(document).on('click','.clear',function(event){
-   clearAll();
-   renderList(TODO_LIST);
-  })
-  $(document).on('click','.clearCompleted',function(event){
-    clearAllCompleted();
-    renderList(TODO_LIST);
-  })
-  
-
-});
+$(document).ready(todoOrg.init);
 
 </script>
 </html>

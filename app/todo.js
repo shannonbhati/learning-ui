@@ -1,7 +1,4 @@
 var TODO_LIST = JSON.parse(localStorage.getItem("todo_list")) || [];
-// if (TODO_LIST == null) {
-// 	TODO_LIST = [];
-// }
 
 
 function addToList(taskName) {
