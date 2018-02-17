@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Healer Helper</title>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+	<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+	<script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+	<script src="/bundle.js"></script>
+	<style type="text/css">
+		.break-text {
+			display: block;
+			width: 100px;
+			word-wrap: break-word;
+		}
+		.page-content{
+			margin-top: 30px;
+			margin-left: 20%;
+		}
+	</style>
+</head>
+<body>
+
+	<!-- Always shows a header, even in smaller screens. -->
+	<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+		<header class="mdl-layout__header">
+			<div class="mdl-layout__header-row">
+				<!-- Title -->
+				<span class="mdl-layout-title">Healer Helper</span>
+				<!-- Add spacer, to align navigation to the right -->
+				<div class="mdl-layout-spacer"></div>
+				<!-- Navigation. We hide it in small screens. -->
+				<nav class="mdl-navigation mdl-layout--large-screen-only">
+					<span class="mdl-navigation__link" href="">Total Patient : 394</span>
+					<span class="mdl-navigation__link" href="">Remaining Patient : 394</span>
+					<span class="mdl-navigation__link" href="">No Patient Available</span>
+					<a class="mdl-navigation__link" href="">Send Next Patient</a>
+				</nav>
+			</div>
+		</header>
+		<div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer">
+			<div class="mdl-layout__drawer">
+				<!-- Expandable Textfield -->
+				<form action="#">
+
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+						<input class="mdl-textfield__input" type="text" id="">
+						<label class="mdl-textfield__label" for="">Search Patient</label>
+					</div>
+				</form>
+
+
+				<nav class="mdl-navigation">
+					<!-- List items with avatar and action -->
+					<style>
+						.demo-list-action {
+							width: 300px;
+						}
+					</style>
+
+					<div class="demo-list-action mdl-list">
+
+						
+					</div>
+
+				</nav>
+			</div>
+		</div>
+		<main class="mdl-layout__content">
+			<div class="page-content">
+				<!-- Square card -->
+				<style>
+					.demo-card-square.mdl-card {
+						width: 800px;
+						height: 320px;
+					}
+					.demo-card-square > .mdl-card__title {
+						color: black;
+					}
+				</style>
+
+
+			</div>
+		</main>
+	</div>
+
+
+</body>
+<script id="cardView" type="text/html">
+	<!-- <div class="mdl-card--expand mdl-shadow--2dp">
+		<div class="mdl-card__supporting-text">
+			{{text}}
+			
+		</div> -->
+		<form action="#">
+			<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+				<input class="mdl-textfield__input" type="text" id="sample3">
+				<label class="mdl-textfield__label" for="sample3">Text...</label>
+			</div>
+		</form>
+	<!-- </div> -->
+</script>
+<script type="text/javascript">
+
+	$(document).ready(function() {
+
+		$.get('/api/patients/today', function(data, status) {
+			var todayPatients = data.patients.map(function(item) {
+				var listItemOuter = $('<div/>', {
+					'class': 'mdl-list__item pList-item',
+					'data-id' : item._id
+				});
+				var innerSpan = $('<span/>', {
+					'class': 'mdl-list__item-primary-content'
+				});
+				innerSpan.append($('<i/>', {
+					'class': 'material-icons mdl-list__item-avatar',
+					text: 'person'
+				}));
+				innerSpan.append($('<span/>', {
+					text: item.name,
+					class: "break-text"
+				}));
+				var rigthList = $('<a/>', {
+					'class': 'mdl-list__item-secondary-action',
+					'href': '#'
+				}).append($('<i/>', {
+					'class': 'material-icons',
+					text: 'star'
+				}))
+				return listItemOuter.append(innerSpan).append(rigthList);
+			})
+			$('.demo-list-action').append(todayPatients)
+
+		})
+
+		$(document).on('click', '.pList-item', function(event) {
+			var patientId = $(event.currentTarget).attr('data-id');
+			$.get('/api/patient/history/'+patientId, function(data, status){
+				$('.page-content').html(data.patients[0].name +"&nbsp"+"&nbsp")
+				$('.page-content').append(data.patients[0].mobile_number)
+				data.patients.forEach(function(item){
+					var template = document.getElementById('cardView').innerHTML;
+
+					var paper = Mustache.to_html(template, {text: item.comment});
+					$('.page-content').append(paper)
+					componentHandler.upgradeElements($('.mdl-textfield').get());
+				})
+
+			})
+
+		})
+
+	})
+	
+</script>
+</html>

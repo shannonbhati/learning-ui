@@ -38,7 +38,7 @@ module.exports = {
     contentBase: './',
     proxy: {
       "/api": {
-        target: "http://127.0.0.1:8080",
+        target: "http://127.0.0.1:9000",
         cookieDomainRewrite: "127.0.0.1",
         hostRewrite: "127.0.0.1:3000"
       }
