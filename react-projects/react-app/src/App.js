@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Button from './Button'
 import Para from './Para';
+import MyRefComponent from './MyRefComponent';
+import MyLifeCycleComponent from './MyLifeCycleComponent';
 
 class App extends React.Component {
   constructor() {
@@ -42,6 +44,8 @@ class App extends React.Component {
           });
               
         </Para>
+        <MyRefComponent />
+        <MyLifeCycleComponent />
       </div>
     );
   }

@@ -1,0 +1,34 @@
+.row {
+  display: flex;
+}
+
+/* Create two equal columns that sits next to each other */
+.note-details {
+  flex: 80%;
+  padding: 10px;
+  background-color: blanchedalmond;
+  
+  position: relative;
+  
+}
+.note-list {
+  flex: 20%;
+  padding: 10px;
+  background-color: papayawhip;
+
+  position: relative;
+}
+.add-button {
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  background-color: navy;
+  color: wheat;
+}
+.save-button {
+  width: 30%;
+  background-color: navy;
+  color: wheat;
+  position: absolute;
+}
+
