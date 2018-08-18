@@ -1,116 +1,137 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
 
 class App extends Component {
   constructor() {
-    super();
+    super()
     this.state = {
       notes: [{
-        header: 'abc',
-        content: 'hello weorrld'
-      }, {
-        header: 'kkbc',
-        content: 'hellod'
-      }],
+        header: 'first',
+        content: 'Data is here'
+      },
+      {
+        header: 'second',
+        content: 'second is here'
+      }
+      ],
       currentSelected: 0,
-      currentEdit: -1,
-      newText: 'hello weorrld',
-      i:0,
-      newEdit:'abc'
-
+      newText: 'Data is here',
+      editHeader: -1,
+      i: 0,
+      CurrentHeader: 'first'
     }
+    this.show = this.show.bind(this);
     this.add = this.add.bind(this);
-    this.data = this.data.bind(this);
-    this.modify = this.modify.bind(this);
-    this.save = this.save.bind(this);
     this.edit = this.edit.bind(this);
-    this.saveEdit = this.saveEdit.bind(this);
+    this.save = this.save.bind(this);
+    this.saveHeader = this.saveHeader.bind(this);
     this.editList = this.editList.bind(this);
+    this.editH = this.editH.bind(this);
+    this.up = this.up.bind(this);
+    this.down = this.down.bind(this);
+  }
+  show(e) {
+    this.setState({
+      currentSelected: e.currentTarget.getAttribute('data-id'),
+      newText: this.state.notes[e.currentTarget.getAttribute('data-id')].content
+
+    })
   }
   add() {
     this.setState({
       notes: [
         ...this.state.notes,
         {
-          header: 'ccd',
-          content: 'new entry'
-        }
-      ]
+          header: 'third',
+          content: 'new data'
+        }]
     })
   }
-  data(e) {
-    this.setState({
-      currentSelected: e.currentTarget.getAttribute('data-id'),
-      newText: this.state.notes[e.currentTarget.getAttribute('data-id')].content
-    })
-  }
-
-  modify(e) {
+  edit(e) {
     this.setState(
       {
         newText: e.target.value
       }
-
-    )}
-    editList(e){
-      this.setState({
-        newEdit: e.target.value
-      })
-    }
+    )
+  }
   save() {
     this.state.notes[this.state.currentSelected].content = this.state.newText
     this.setState(
       this.state
     )
   }
-  edit(e) {
-    this.setState({
-      currentEdit: e.target.getAttribute("data-id"),
-      newEdit: this.state.notes[e.currentTarget.getAttribute('data-id')].header
-    })
-  }
-  saveEdit(){
-    this.state.notes[this.state.currentEdit].header=this.state.newEdit
-    this.state.currentEdit=-1;
+  saveHeader(e) {
+    this.state.notes[this.state.editHeader].header = this.state.CurrentHeader
+    this.state.editHeader = -1;
     this.setState(
       this.state
     )
-}
+  }
+  editList(e) {
+    this.setState({
+      CurrentHeader: e.target.value
+    })
 
+  }
+  editH(e) {
+    this.setState({
+      editHeader: e.target.getAttribute("data-id"),
+      CurrentHeader: this.state.notes[e.currentTarget.getAttribute('data-id')].header
+    })
+  }
+  up(e) {
+    var temp = this.state.notes[e.target.getAttribute('data-id')].header
+    this.state.notes[e.currentTarget.getAttribute('data-id')].header = this.state.notes[e.currentTarget.getAttribute('data-id') - 1].header
+    this.state.notes[e.currentTarget.getAttribute('data-id') - 1].header = temp
+    this.setState(
+      this.state
+    )
+
+  }
+  down(e) {
+    const dataId = parseInt(e.target.getAttribute('data-id'));
+    var tempL = this.state.notes[dataId].header
+    this.state.notes[dataId].header = this.state.notes[dataId + 1].header
+    this.state.notes[dataId + 1].header = tempL
+    this.setState(
+      this.state
+    )
+  }
   render() {
     return (
-      <div className="row">
-        <div className="note-list" >
-          <button className="add-button" onClick={this.add}>+</button>
-          <h2>List</h2>
-          <ol>
-            {this.state.notes.map((note, i) => {
-              if (this.state.currentEdit == i) {
-                return (
-                  <li key={i} >
-                    <input data-id={i} value={this.state.newEdit} onChange={this.editList}></input>
-                    <button data-id={i} onClick={this.saveEdit}>save</button>
-                  </li>
-                )
-              }
-              else {
-                return (
-                  <li key={i} >
-                    <span data-id={i} onClick={this.data}>{note.header}</span>
-                    <button data-id={i} onClick={this.edit}>edit</button>
-                  </li>
-                )
-              }
-            })}
-          </ol>
-        </div>
-        <div className="note-details" >
-          <button className="save-button" onClick={this.save} >Save</button>
-          <h2>Task</h2>
-          <textarea rows="4" cols="50" value={this.state.newText} onChange={this.modify} />
-        </div>
+      <div>
+        <ol>{
+          this.state.notes.map((note, i) => {
+            if (this.state.editHeader == i) {
+              return (
+                <li key={i}>
+                  <input data-id={i} value={this.state.CurrentHeader} onChange={this.editList}></input>
+                  <button data-id={i} onClick={this.saveHeader}>save</button>
+                </li>
+              )
+            }
+            else {
+              return (
+                <li key={i} >
+                  <span
+                    data-id={i} onClick={this.show}>
+                    {note.header}
+                  </span>
+                  <button data-id={i} onClick={this.editH}>edit</button>
+                  <button data-id={i} onClick={this.up}>up</button>
+                  <button data-id={i} onClick={this.down}>down</button>
+                </li>
+              )
+            }
+
+          }
+          )
+        }
+        </ol>
+        <button onClick={this.add}>add</button>
+        <button onClick={this.save}>Save</button>
+        <textarea rows="4" cols="50" value={this.state.newText} onChange={this.edit}></textarea>
       </div>
+
     );
   }
 }
